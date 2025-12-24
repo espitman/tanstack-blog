@@ -86,9 +86,10 @@ function Home() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex-1 flex flex-col justify-between text-right">
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-3 leading-relaxed">
-                      {post.content}
-                    </p>
+                    <div
+                      className="text-sm text-muted-foreground mb-4 line-clamp-3 leading-relaxed prose prose-sm max-w-none"
+                      dangerouslySetInnerHTML={{ __html: post.content }}
+                    />
                     <div className="flex items-center justify-between pt-4 border-t">
                       <p className="text-xs text-muted-foreground">
                         {new Date(post.createdAt).toLocaleDateString('fa-IR', {

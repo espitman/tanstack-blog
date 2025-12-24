@@ -20,57 +20,62 @@ function PostDetail() {
   const post = Route.useLoaderData()
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50">
-      <article className="container mx-auto px-4 py-12 max-w-4xl">
-        <div className="flex flex-wrap gap-3 mb-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+      <article className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="flex flex-wrap gap-3 mb-6">
           <Link to="/">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="shadow-sm hover:shadow-md transition-shadow">
               <ArrowLeft size={16} className="ml-2" />
               بازگشت به پست‌ها
             </Button>
           </Link>
           <Link to="/admin/edit/$slug" params={{ slug: post.slug }}>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" className="shadow-sm hover:shadow-md transition-shadow">
               <Edit2 size={16} className="ml-2" />
               ویرایش پست
             </Button>
           </Link>
         </div>
 
-        <Card className="border-0 shadow-xl overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
           {post.imageUrl && (
-            <div className="w-full h-[500px] overflow-hidden relative">
+            <div className="w-full h-[600px] overflow-hidden relative">
               <img
                 src={post.imageUrl}
                 alt={post.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
             </div>
           )}
-          <CardHeader className="px-8 pt-8 pb-4">
-            <CardTitle className="text-4xl sm:text-5xl font-bold mb-4 leading-tight">
+          
+          <div className="px-8 md:px-12 lg:px-16 pt-10 pb-6">
+            <CardTitle className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-gray-900">
               {post.title}
             </CardTitle>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Calendar size={16} />
-              <time className="text-sm">
-                {new Date(post.createdAt).toLocaleDateString('fa-IR', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </time>
-            </div>
-          </CardHeader>
-          <CardContent className="px-8 pb-12">
-            <div className="prose prose-lg max-w-none">
-              <div className="whitespace-pre-wrap text-gray-700 leading-relaxed text-lg">
-                {post.content}
+            <div className="flex items-center gap-3 text-gray-600 mb-8 pb-6 border-b border-gray-200">
+              <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full">
+                <Calendar size={18} className="text-blue-600" />
+                <time className="text-sm font-medium">
+                  {new Date(post.createdAt).toLocaleDateString('fa-IR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </time>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+
+          <div className="px-8 md:px-12 lg:px-16 pb-16">
+            <div className="prose prose-lg md:prose-xl max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6 prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-strong:text-gray-900 prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8 prose-blockquote:border-r-4 prose-blockquote:border-blue-500 prose-blockquote:bg-blue-50 prose-blockquote:py-4 prose-blockquote:px-6 prose-blockquote:rounded-lg prose-blockquote:my-6 prose-ul:list-disc prose-ol:list-decimal prose-li:mb-2">
+              <div
+                className="text-gray-700 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: post.content }}
+              />
+            </div>
+          </div>
+        </div>
       </article>
     </div>
   )

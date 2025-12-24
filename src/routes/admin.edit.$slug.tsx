@@ -2,9 +2,9 @@ import { createFileRoute, useRouter, Link, notFound } from '@tanstack/react-rout
 import { getPostBySlugFn, updatePostFn } from '@/lib/posts/posts.server-functions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { HtmlEditor } from '@/components/HtmlEditor'
 import { useState, useCallback, useEffect } from 'react'
 
 export const Route = createFileRoute('/admin/edit/$slug')({
@@ -65,7 +65,7 @@ function EditPost() {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50">
-      <div className="container mx-auto px-4 py-12 max-w-3xl">
+      <div className="container mx-auto px-4 py-12 max-w-6xl">
         <Link to={`/posts/${post.slug}`}>
           <Button variant="outline" className="mb-8">
             ← بازگشت به پست
@@ -132,13 +132,10 @@ function EditPost() {
 
               <div className="space-y-2">
                 <Label htmlFor="content">محتوای پست</Label>
-                <Textarea
-                  id="content"
+                <HtmlEditor
                   value={content}
-                  onChange={(e) => setContent(e.target.value)}
+                  onChange={setContent}
                   placeholder="محتوای پست خود را اینجا بنویسید..."
-                  rows={12}
-                  required
                 />
               </div>
 
