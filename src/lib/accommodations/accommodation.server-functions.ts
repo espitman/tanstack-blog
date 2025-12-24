@@ -2,6 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import {
   getAccommodations,
   getAccommodationsByCity,
+  getAccommodationsByProvince,
   getAccommodationDetail,
   getAccommodationReviewSummary,
 } from './accommodation.service'
@@ -41,6 +42,15 @@ export const getAccommodationsByCityFn = createServerFn({
   .inputValidator((data: { cityName: string; params?: AccommodationSearchParams }) => data)
   .handler(async ({ data }) => {
     return await getAccommodationsByCity(data.cityName, data.params || {})
+  })
+
+// Fetch accommodations by province
+export const getAccommodationsByProvinceFn = createServerFn({
+  method: 'GET',
+})
+  .inputValidator((data: { provinceName: string; params?: AccommodationSearchParams }) => data)
+  .handler(async ({ data }) => {
+    return await getAccommodationsByProvince(data.provinceName, data.params || {})
   })
 
 // Fetch review summary

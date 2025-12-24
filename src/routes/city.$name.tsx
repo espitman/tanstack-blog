@@ -156,7 +156,15 @@ function CityAccommodations() {
                           >
                             {accommodation.location.city}
                           </Link>
-                          ، {accommodation.location.province}
+                          ،{' '}
+                          <Link
+                            to="/province/$name"
+                            params={{ name: cityNameToSlug(accommodation.location.provinceEn || accommodation.location.province) }}
+                            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                            className="hover:text-blue-600 transition-colors"
+                          >
+                            {accommodation.location.province}
+                          </Link>
                         </span>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4 justify-start">
