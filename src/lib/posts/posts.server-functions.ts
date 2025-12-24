@@ -4,6 +4,7 @@ import {
   getPostBySlug,
   createPost,
   updatePost,
+  getLatestPosts,
 } from './posts.service'
 import type { NewPost } from './posts.types'
 
@@ -48,5 +49,14 @@ export const updatePostFn = createServerFn({
   .handler(async ({ data }) => {
     const { slug, ...updateData } = data
     return await updatePost(slug, updateData)
+  })
+
+// Fetch latest posts excluding current post
+export const getLatestPostsFn = createServerFn({
+  method: 'GET',
+})
+  .inputValidator((data: { excludeSlug: string; limit?: number }) => data)
+  .handler(async ({ data }) => {
+    return await getLatestPosts(data.excludeSlug, data.limit || 5)
   })
 

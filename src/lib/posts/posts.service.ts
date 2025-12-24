@@ -1,6 +1,6 @@
 import { db } from '@/db'
 import { posts } from '@/db/schema'
-import { eq, desc } from 'drizzle-orm'
+import { eq, desc, ne } from 'drizzle-orm'
 import type { Post, NewPost } from './posts.types'
 
 /**
@@ -43,5 +43,17 @@ export async function updatePost(
     .returning()
 
   return updatedPost
+}
+
+/**
+ * Fetch latest posts excluding current post
+ */
+export async function getLatestPosts(excludeSlug: string, limit: number = 5): Promise<Post[]> {
+  return await db
+    .select()
+    .from(posts)
+    .where(ne(posts.slug, excludeSlug))
+    .orderBy(desc(posts.createdAt))
+    .limit(limit)
 }
 
