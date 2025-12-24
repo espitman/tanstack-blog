@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { getAllAccommodations } from '@/lib/accommodations/accommodation.server-functions'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { AccommodationCardSkeleton } from '@/components/AccommodationCardSkeleton'
 import { ChevronRight, ChevronLeft, Star, MapPin, Users } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import type { Accommodation } from '@/lib/accommodations/accommodation.types'
@@ -38,19 +39,23 @@ function AccommodationsList() {
   const [hasMore, setHasMore] = useState(
     currentPage === 1 ? initialData.hasMore : true
   )
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (currentPage === 1) {
       setAccommodations(initialData.accommodations)
       setHasMore(initialData.hasMore)
+      setIsLoading(false)
       return
     }
 
+    setIsLoading(true)
     getAllAccommodations({
       data: { pageSize, pageNumber: currentPage },
     }).then((data) => {
       setAccommodations(data)
       setHasMore(data.length === pageSize)
+      setIsLoading(false)
     })
   }, [currentPage, pageSize, initialData])
 
@@ -80,7 +85,13 @@ function AccommodationsList() {
           </Link>
         </div>
 
-        {accommodations.length === 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+            {Array.from({ length: pageSize }).map((_, index) => (
+              <AccommodationCardSkeleton key={index} />
+            ))}
+          </div>
+        ) : accommodations.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-gray-600">هیچ اقامتگاهی یافت نشد</p>
           </div>
