@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
 import { getAccommodationByCode, getAccommodationReview } from '@/lib/accommodations/accommodation.server-functions'
 import { getLatestPostsFn } from '@/lib/posts/posts.server-functions'
+import { formatPersianDateShort } from '@/lib/utils/date'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
