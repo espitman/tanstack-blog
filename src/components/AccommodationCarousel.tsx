@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { Card, CardContent } from '@/components/ui/card'
 import { ChevronRight, ChevronLeft, Star, MapPin, Users } from 'lucide-react'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import type { Accommodation } from '@/lib/accommodations/accommodation.types'
 
 interface AccommodationCarouselProps {
@@ -11,27 +11,58 @@ interface AccommodationCarouselProps {
 export function AccommodationCarousel({
   accommodations,
 }: AccommodationCarouselProps) {
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [canScrollLeft, setCanScrollLeft] = useState(true)
+  const [canScrollRight, setCanScrollRight] = useState(true)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+
+  const checkScrollButtons = () => {
+    if (!scrollContainerRef.current) return
+    const container = scrollContainerRef.current
+    const { scrollLeft, scrollWidth, clientWidth } = container
+    
+    // در RTL، scrollLeft منفی است
+    // وقتی scrollLeft نزدیک به 0 یا مثبت است، در ابتدای لیست هستیم
+    // وقتی scrollLeft منفی و |scrollLeft| + clientWidth >= scrollWidth است، در انتهای لیست هستیم
+    const absScrollLeft = Math.abs(scrollLeft)
+    const isAtStart = absScrollLeft < 10
+    const isAtEnd = absScrollLeft + clientWidth >= scrollWidth - 10
+    
+    setCanScrollRight(!isAtStart) // دکمه راست (قبلی) وقتی در ابتدا نیستیم فعال است
+    setCanScrollLeft(!isAtEnd) // دکمه چپ (بعدی) وقتی در انتها نیستیم فعال است
+  }
 
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return
 
     const container = scrollContainerRef.current
-    const cardWidth = 320 // عرض تقریبی هر کارت + gap
+    const cardWidth = 336 // عرض کارت (320) + gap (16)
     const scrollAmount = cardWidth * 2
 
-    // در RTL، scrollLeft برای اسکرول به جلو (چپ) منفی می‌شود و برای اسکرول به عقب (راست) مثبت
     if (direction === 'right') {
-      // اسکرول به راست (عقب در RTL)
+      // اسکرول به راست (به سمت ابتدا در RTL)
       container.scrollBy({ left: scrollAmount, behavior: 'smooth' })
-      setCurrentIndex((prev) => Math.max(0, prev - 2))
     } else {
-      // اسکرول به چپ (جلو در RTL)
+      // اسکرول به چپ (به سمت انتها در RTL)
       container.scrollBy({ left: -scrollAmount, behavior: 'smooth' })
-      setCurrentIndex((prev) => Math.min(accommodations.length - 1, prev + 2))
     }
+    
+    // بعد از اسکرول، وضعیت دکمه‌ها را بررسی کن
+    setTimeout(checkScrollButtons, 300)
   }
+
+  // بررسی وضعیت اسکرول هنگام لود و تغییر اندازه
+  useEffect(() => {
+    checkScrollButtons()
+    const container = scrollContainerRef.current
+    if (container) {
+      container.addEventListener('scroll', checkScrollButtons)
+      window.addEventListener('resize', checkScrollButtons)
+      return () => {
+        container.removeEventListener('scroll', checkScrollButtons)
+        window.removeEventListener('resize', checkScrollButtons)
+      }
+    }
+  }, [accommodations.length])
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('fa-IR').format(price)
@@ -44,7 +75,7 @@ export function AccommodationCarousel({
         <div className="flex gap-2">
           <button
             onClick={() => scroll('right')}
-            disabled={currentIndex === 0}
+            disabled={!canScrollRight}
             className="p-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
             aria-label="قبلی"
           >
@@ -52,7 +83,7 @@ export function AccommodationCarousel({
           </button>
           <button
             onClick={() => scroll('left')}
-            disabled={currentIndex >= accommodations.length - 2}
+            disabled={!canScrollLeft}
             className="p-2 rounded-full bg-white border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
             aria-label="بعدی"
           >
