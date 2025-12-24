@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { AccommodationCarousel } from '@/components/AccommodationCarousel'
 import type { Post } from '@/lib/posts/posts.types'
 import type { Accommodation } from '@/lib/accommodations/accommodation.types'
-import { Plus } from 'lucide-react'
+import { Plus, ArrowLeft } from 'lucide-react'
 import { HomeSkeleton } from '@/components/HomeSkeleton'
 
 export const Route = createFileRoute('/')({
@@ -75,43 +75,53 @@ function Home() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {posts.map((post: Post) => (
-              <Link key={post.id} to="/posts/$slug" params={{ slug: post.slug }}>
-                <Card className="h-full group hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col border-0 shadow-md hover:-translate-y-1">
-                  {post.imageUrl && (
-                    <div className="w-full h-56 overflow-hidden rounded-t-lg relative">
-                      <img
-                        src={post.imageUrl}
-                        alt={post.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+              {posts.map((post: Post) => (
+                <Link key={post.id} to="/posts/$slug" params={{ slug: post.slug }}>
+                  <Card className="h-full group hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col border-0 shadow-md hover:-translate-y-1">
+                    {post.imageUrl && (
+                      <div className="w-full h-56 overflow-hidden rounded-t-lg relative">
+                        <img
+                          src={post.imageUrl}
+                          alt={post.title}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                    )}
+                    <CardHeader className="pb-3 text-right">
+                      <CardTitle className="line-clamp-2 text-xl group-hover:text-blue-600 transition-colors">
+                        {post.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-1 flex flex-col justify-between text-right">
+                      <div
+                        className="text-sm text-muted-foreground mb-4 line-clamp-3 leading-relaxed prose prose-sm max-w-none"
+                        dangerouslySetInnerHTML={{ __html: post.content }}
                       />
-                      <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                  )}
-                  <CardHeader className="pb-3 text-right">
-                    <CardTitle className="line-clamp-2 text-xl group-hover:text-blue-600 transition-colors">
-                      {post.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="flex-1 flex flex-col justify-between text-right">
-                    <div
-                      className="text-sm text-muted-foreground mb-4 line-clamp-3 leading-relaxed prose prose-sm max-w-none"
-                      dangerouslySetInnerHTML={{ __html: post.content }}
-                    />
-                    <div className="flex items-center justify-between pt-4 border-t">
-                      <p className="text-xs text-muted-foreground">
-                        {(post as Post & { formattedDate?: string }).formattedDate}
-                      </p>
-                      <span className="text-xs text-blue-600 font-medium group-hover:translate-x-1 inline-block transition-transform">
-                        ادامه مطلب ←
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
+                      <div className="flex items-center justify-between pt-4 border-t">
+                        <p className="text-xs text-muted-foreground">
+                          {(post as Post & { formattedDate?: string }).formattedDate}
+                        </p>
+                        <span className="text-xs text-blue-600 font-medium group-hover:translate-x-1 inline-block transition-transform">
+                          ادامه مطلب ←
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+            <div className="flex justify-center mt-8">
+              <Link to="/posts">
+                <Button variant="outline" size="lg" className="shadow-md">
+                  <ArrowLeft size={18} className="ml-2" />
+                  نمایش همه پست‌ها
+                </Button>
               </Link>
-            ))}
-          </div>
+            </div>
+          </>
         )}
         </section>
       </div>

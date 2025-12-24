@@ -45,7 +45,7 @@ export function Footer() {
                 <Link to="/accommodations" className="hover:text-blue-600 transition-colors">اقامتگاه‌ها</Link>
               </li>
               <li>
-                <Link to="/" className="hover:text-blue-600 transition-colors">وبلاگ</Link>
+                <Link to="/posts" className="hover:text-blue-600 transition-colors">وبلاگ</Link>
               </li>
               <li>
                 <Link to="/admin/new" className="hover:text-blue-600 transition-colors">ساخت پست جدید</Link>

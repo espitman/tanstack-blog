@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PostsIndexRouteImport } from './routes/posts.index'
 import { Route as AccommodationsIndexRouteImport } from './routes/accommodations.index'
 import { Route as PostsSlugRouteImport } from './routes/posts.$slug'
 import { Route as AdminNewRouteImport } from './routes/admin.new'
@@ -25,6 +26,11 @@ const LoginRoute = LoginRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PostsIndexRoute = PostsIndexRouteImport.update({
+  id: '/posts/',
+  path: '/posts/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AccommodationsIndexRoute = AccommodationsIndexRouteImport.update({
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/admin/new': typeof AdminNewRoute
   '/posts/$slug': typeof PostsSlugRoute
   '/accommodations': typeof AccommodationsIndexRoute
+  '/posts': typeof PostsIndexRoute
   '/admin/edit/$slug': typeof AdminEditSlugRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/admin/new': typeof AdminNewRoute
   '/posts/$slug': typeof PostsSlugRoute
   '/accommodations': typeof AccommodationsIndexRoute
+  '/posts': typeof PostsIndexRoute
   '/admin/edit/$slug': typeof AdminEditSlugRoute
 }
 export interface FileRoutesById {
@@ -79,6 +87,7 @@ export interface FileRoutesById {
   '/admin/new': typeof AdminNewRoute
   '/posts/$slug': typeof PostsSlugRoute
   '/accommodations/': typeof AccommodationsIndexRoute
+  '/posts/': typeof PostsIndexRoute
   '/admin/edit/$slug': typeof AdminEditSlugRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +99,7 @@ export interface FileRouteTypes {
     | '/admin/new'
     | '/posts/$slug'
     | '/accommodations'
+    | '/posts'
     | '/admin/edit/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/admin/new'
     | '/posts/$slug'
     | '/accommodations'
+    | '/posts'
     | '/admin/edit/$slug'
   id:
     | '__root__'
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/admin/new'
     | '/posts/$slug'
     | '/accommodations/'
+    | '/posts/'
     | '/admin/edit/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -118,6 +130,7 @@ export interface RootRouteChildren {
   AdminNewRoute: typeof AdminNewRoute
   PostsSlugRoute: typeof PostsSlugRoute
   AccommodationsIndexRoute: typeof AccommodationsIndexRoute
+  PostsIndexRoute: typeof PostsIndexRoute
   AdminEditSlugRoute: typeof AdminEditSlugRoute
 }
 
@@ -135,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/posts/': {
+      id: '/posts/'
+      path: '/posts'
+      fullPath: '/posts'
+      preLoaderRoute: typeof PostsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/accommodations/': {
@@ -182,6 +202,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminNewRoute: AdminNewRoute,
   PostsSlugRoute: PostsSlugRoute,
   AccommodationsIndexRoute: AccommodationsIndexRoute,
+  PostsIndexRoute: PostsIndexRoute,
   AdminEditSlugRoute: AdminEditSlugRoute,
 }
 export const routeTree = rootRouteImport

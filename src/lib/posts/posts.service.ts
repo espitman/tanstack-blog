@@ -4,10 +4,23 @@ import { eq, desc, ne } from 'drizzle-orm'
 import type { Post, NewPost } from './posts.types'
 
 /**
- * Fetch all posts
+ * Fetch all posts with pagination
  */
-export async function getAllPosts(): Promise<Post[]> {
-  return await db.select().from(posts).orderBy(desc(posts.createdAt))
+export async function getAllPostsPaginated(page: number = 1, pageSize: number = 9): Promise<Post[]> {
+  return await db
+    .select()
+    .from(posts)
+    .orderBy(desc(posts.createdAt))
+    .limit(pageSize)
+    .offset((page - 1) * pageSize)
+}
+
+/**
+ * Get total posts count
+ */
+export async function getPostsCount(): Promise<number> {
+  const result = await db.select({ count: posts.id }).from(posts)
+  return result.length
 }
 
 /**

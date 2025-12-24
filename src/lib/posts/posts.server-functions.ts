@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import {
-  getAllPosts,
+  getAllPostsPaginated,
+  getPostsCount,
   getPostBySlug,
   createPost,
   updatePost,
@@ -8,12 +9,25 @@ import {
 } from './posts.service'
 import type { NewPost } from './posts.types'
 
-// Fetch all posts
+// Fetch all posts (for home page or internal use, default to first 6)
 export const getAllPostsFn = createServerFn({
   method: 'GET',
 }).handler(async () => {
-  return await getAllPosts()
+  return await getAllPostsPaginated(1, 6)
 })
+
+// Fetch posts with pagination
+export const getAllPostsPaginatedFn = createServerFn({
+  method: 'GET',
+})
+  .inputValidator((data: { page: number; pageSize: number }) => data)
+  .handler(async ({ data }) => {
+    const [posts, totalCount] = await Promise.all([
+      getAllPostsPaginated(data.page, data.pageSize),
+      getPostsCount(),
+    ])
+    return { posts, totalCount }
+  })
 
 // Fetch a single post by slug
 export const getPostBySlugFn = createServerFn({
@@ -59,4 +73,3 @@ export const getLatestPostsFn = createServerFn({
   .handler(async ({ data }) => {
     return await getLatestPosts(data.excludeSlug, data.limit || 5)
   })
-
