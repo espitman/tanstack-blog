@@ -115,7 +115,7 @@ export function AccommodationCarousel({
             params={{ code: accommodation.code.toString() }}
             className="shrink-0 w-80"
           >
-            <Card className="h-full group hover:shadow-2xl transition-all duration-300 cursor-pointer border-0 shadow-md hover:-translate-y-1 overflow-hidden">
+            <Card className="h-full group hover:shadow-2xl transition-all duration-300 cursor-pointer border-0 shadow-md hover:-translate-y-1 overflow-hidden pt-0">
               <div className="relative w-full h-56 overflow-hidden">
                 <img
                   src={accommodation.image}

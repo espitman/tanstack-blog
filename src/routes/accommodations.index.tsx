@@ -80,7 +80,7 @@ function AccommodationsList() {
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">همه اقامتگاه‌ها</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-0">همه اقامتگاه‌ها</h1>
             <p className="text-gray-600">انتخاب از بین {accommodations.length} اقامتگاه</p>
           </div>
           <Link to="/">
@@ -107,7 +107,7 @@ function AccommodationsList() {
                   to="/accommodations/$code"
                   params={{ code: accommodation.code.toString() }}
                 >
-                  <Card className="h-full group hover:shadow-2xl transition-all duration-300 cursor-pointer border-0 shadow-md hover:-translate-y-1 overflow-hidden">
+                  <Card className="h-full group hover:shadow-2xl transition-all duration-300 cursor-pointer border-0 shadow-md hover:-translate-y-1 overflow-hidden pt-0">
                     <div className="relative w-full h-56 overflow-hidden">
                       <img
                         src={accommodation.image}
