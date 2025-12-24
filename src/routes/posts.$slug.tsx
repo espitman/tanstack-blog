@@ -4,11 +4,14 @@ import { formatPersianDate, formatPersianDateShort } from '@/lib/utils/date'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
+import { PostDetailSkeleton } from '@/components/PostDetailSkeleton'
 import { Edit2, ArrowLeft, Calendar } from 'lucide-react'
 import type { Post } from '@/lib/posts/posts.types'
 
 export const Route = createFileRoute('/posts/$slug')({
   component: PostDetail,
+  pendingComponent: PostDetailSkeleton,
+  pendingMs: 0,
   loader: async ({ params }: { params: { slug: string } }) => {
     const [post, latestPosts] = await Promise.all([
       getPostBySlugFn({ data: params.slug }),

@@ -8,9 +8,12 @@ import { AccommodationCarousel } from '@/components/AccommodationCarousel'
 import type { Post } from '@/lib/posts/posts.types'
 import type { Accommodation } from '@/lib/accommodations/accommodation.types'
 import { Plus } from 'lucide-react'
+import { HomeSkeleton } from '@/components/HomeSkeleton'
 
 export const Route = createFileRoute('/')({
   component: Home,
+  pendingComponent: HomeSkeleton,
+  pendingMs: 0,
   loader: async () => {
     const [posts, accommodations] = await Promise.all([
       getAllPostsFn(),

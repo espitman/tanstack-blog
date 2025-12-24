@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { PostsCarousel } from '@/components/PostsCarousel'
+import { AccommodationDetailSkeleton } from '@/components/AccommodationDetailSkeleton'
 import { MapPin, Star, X, ChevronRight, ChevronLeft } from 'lucide-react'
 import { useState, useMemo, useEffect } from 'react'
 import type { AccommodationDetail, ReviewSummary } from '@/lib/accommodations/accommodation.types'
@@ -24,6 +25,8 @@ import 'react-multi-date-picker/styles/layouts/mobile.css'
 
 export const Route = createFileRoute('/accommodations/$code')({
   component: AccommodationDetail,
+  pendingComponent: AccommodationDetailSkeleton,
+  pendingMs: 0,
   loader: async ({ params }: { params: { code: string } }) => {
     const code = parseInt(params.code)
     if (isNaN(code)) {

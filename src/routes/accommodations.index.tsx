@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { getAllAccommodations } from '@/lib/accommodations/accommodation.server-functions'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { AccommodationsListSkeleton } from '@/components/AccommodationsListSkeleton'
 import { AccommodationCardSkeleton } from '@/components/AccommodationCardSkeleton'
 import { ChevronRight, ChevronLeft, Star, MapPin, Users } from 'lucide-react'
 import { useState, useEffect } from 'react'
@@ -9,6 +10,8 @@ import type { Accommodation } from '@/lib/accommodations/accommodation.types'
 
 export const Route = createFileRoute('/accommodations/')({
   component: AccommodationsList,
+  pendingComponent: AccommodationsListSkeleton,
+  pendingMs: 0,
   validateSearch: (search: Record<string, unknown>) => {
     return {
       page: Number(search.page) || 1,

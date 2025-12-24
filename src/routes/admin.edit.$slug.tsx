@@ -5,10 +5,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { HtmlEditor } from '@/components/HtmlEditor'
+import { AdminEditSkeleton } from '@/components/AdminEditSkeleton'
 import { useState, useCallback, useEffect } from 'react'
 
 export const Route = createFileRoute('/admin/edit/$slug')({
   component: EditPost,
+  pendingComponent: AdminEditSkeleton,
+  pendingMs: 0,
   loader: async ({ params }: { params: { slug: string } }) => {
     const post = await getPostBySlugFn({ data: params.slug })
     if (!post) {
