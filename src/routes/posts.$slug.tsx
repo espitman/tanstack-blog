@@ -1,5 +1,5 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
-import { getPostBySlug } from '@/lib/server-functions'
+import { getPostBySlugFn } from '@/lib/posts/posts.server-functions'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
@@ -8,7 +8,7 @@ import { Edit2, ArrowLeft, Calendar } from 'lucide-react'
 export const Route = createFileRoute('/posts/$slug')({
   component: PostDetail,
   loader: async ({ params }: { params: { slug: string } }) => {
-    const post = await getPostBySlug({ data: params.slug })
+    const post = await getPostBySlugFn({ data: params.slug })
     if (!post) {
       throw notFound()
     }

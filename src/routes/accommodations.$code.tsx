@@ -155,7 +155,7 @@ function AccommodationDetail() {
               <img
                 src={accommodation.placeImages[0]?.url}
                 alt={accommodation.title}
-                className="w-full h-full object-cover hover:opacity-90 transition-opacity cursor-pointer"
+                className="w-full h-full object-cover hover:opacity-90 transition-opacity cursor-pointer rounded-r-2xl"
               />
             </div>
             <div className="w-1/2 h-full grid grid-cols-2 grid-rows-2 gap-1">
@@ -163,8 +163,8 @@ function AccommodationDetail() {
                 <div key={idx} className="w-full h-full overflow-hidden" onClick={() => openLightbox(idx + 1)}>
                   <img
                     src={img.url}
-                    alt={img.caption || accommodation.title}
-                    className="w-full h-full object-cover hover:opacity-90 transition-opacity cursor-pointer"
+                    alt={''+idx}
+                    className={`w-full h-full object-cover hover:opacity-90 transition-opacity cursor-pointer ${idx === 1 ? 'rounded-tl-2xl' : idx === 3 ? 'rounded-bl-2xl' : ''}`}
                   />
                 </div>
               ))}

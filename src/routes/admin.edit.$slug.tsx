@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter, Link, notFound } from '@tanstack/react-router'
-import { getPostBySlug, updatePost } from '@/lib/server-functions'
+import { getPostBySlugFn, updatePostFn } from '@/lib/posts/posts.server-functions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -10,7 +10,7 @@ import { useState, useCallback, useEffect } from 'react'
 export const Route = createFileRoute('/admin/edit/$slug')({
   component: EditPost,
   loader: async ({ params }: { params: { slug: string } }) => {
-    const post = await getPostBySlug({ data: params.slug })
+    const post = await getPostBySlugFn({ data: params.slug })
     if (!post) {
       throw notFound()
     }
@@ -43,7 +43,7 @@ function EditPost() {
 
       setIsSubmitting(true)
       try {
-        const updatedPost = await updatePost({
+        const updatedPost = await updatePostFn({
           data: {
             slug: post.slug,
             title,

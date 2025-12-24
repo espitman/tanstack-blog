@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { getAllPosts } from '@/lib/server-functions'
+import { getAllPostsFn } from '@/lib/posts/posts.server-functions'
 import { getAllAccommodations } from '@/lib/accommodations/accommodation.server-functions'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AccommodationCarousel } from '@/components/AccommodationCarousel'
-import type { Post } from '@/db/schema'
+import type { Post } from '@/lib/posts/posts.types'
 import type { Accommodation } from '@/lib/accommodations/accommodation.types'
 import { Plus } from 'lucide-react'
 
@@ -12,7 +12,7 @@ export const Route = createFileRoute('/')({
   component: Home,
   loader: async () => {
     const [posts, accommodations] = await Promise.all([
-      getAllPosts(),
+      getAllPostsFn(),
       getAllAccommodations({ data: { pageSize: 20, pageNumber: 1 } }),
     ])
     return { posts, accommodations }

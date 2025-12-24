@@ -1,5 +1,5 @@
 import { createFileRoute, useRouter, Link } from '@tanstack/react-router'
-import { createPost } from '@/lib/server-functions'
+import { createPostFn } from '@/lib/posts/posts.server-functions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -28,7 +28,7 @@ function NewPost() {
 
       setIsSubmitting(true)
       try {
-        await createPost({ data: { title, slug, content, imageUrl: imageUrl.trim() || undefined } })
+        await createPostFn({ data: { title, slug, content, imageUrl: imageUrl.trim() || undefined } })
         router.navigate({ to: '/posts/$slug', params: { slug } })
       } catch (error) {
         console.error('Error creating post:', error)
