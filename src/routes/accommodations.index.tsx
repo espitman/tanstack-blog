@@ -7,6 +7,7 @@ import { AccommodationCardSkeleton } from '@/components/AccommodationCardSkeleto
 import { ChevronRight, ChevronLeft, Star, MapPin, Users } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import type { Accommodation } from '@/lib/accommodations/accommodation.types'
+import { cityNameToSlug } from '@/lib/utils/city'
 
 export const Route = createFileRoute('/accommodations/')({
   component: AccommodationsList,
@@ -138,7 +139,15 @@ function AccommodationsList() {
                       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3 justify-start">
                         <MapPin size={14} />
                         <span>
-                          {accommodation.location.city}، {accommodation.location.province}
+                          <Link
+                            to="/city/$name"
+                            params={{ name: cityNameToSlug(accommodation.location.cityEn || accommodation.location.city) }}
+                            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+                            className="hover:text-blue-600 transition-colors"
+                          >
+                            {accommodation.location.city}
+                          </Link>
+                          ، {accommodation.location.province}
                         </span>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4 justify-start">
