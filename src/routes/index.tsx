@@ -50,7 +50,7 @@ function Home() {
             <div>
               <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-2">
                 پست‌های وبلاگ
-              </h1>
+            </h1>
               <p className="text-gray-600">مطالب و داستان‌های جدید ما را کشف کنید</p>
             </div>
             <Link to="/admin/new">
@@ -88,7 +88,7 @@ function Home() {
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                         />
                         <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </div>
+        </div>
                     )}
                     <CardHeader className="pb-3 text-right">
                       <CardTitle className="line-clamp-2 text-xl group-hover:text-blue-600 transition-colors">
@@ -120,10 +120,10 @@ function Home() {
                   نمایش همه پست‌ها
                 </Button>
               </Link>
-            </div>
+        </div>
           </>
         )}
-        </section>
+      </section>
       </div>
     </div>
   )

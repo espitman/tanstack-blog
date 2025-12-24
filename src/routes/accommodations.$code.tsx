@@ -10,9 +10,11 @@ import { PostsCarousel } from '@/components/PostsCarousel'
 import { AccommodationDetailSkeleton } from '@/components/AccommodationDetailSkeleton'
 import { MapPin, Star, X, ChevronRight, ChevronLeft } from 'lucide-react'
 import { useState, useMemo, useEffect } from 'react'
+import { cityNameToSlug } from '@/lib/utils/city'
 import type { AccommodationDetail, ReviewSummary } from '@/lib/accommodations/accommodation.types'
 import type { Post } from '@/lib/posts/posts.types'
 import DatePicker, { DateObject } from 'react-multi-date-picker'
+import { Link } from '@tanstack/react-router'
 // @ts-ignore
 const DatePickerComponent = DatePicker.default || DatePicker
 import persian from 'react-date-object/calendars/persian'
@@ -154,8 +156,21 @@ function AccommodationDetail() {
             <div className="flex items-center gap-1 text-gray-600">
               <MapPin size={16} />
               <span>
-                {accommodation.placeOfResidence.area.city.name.fa}،{' '}
-                {accommodation.placeOfResidence.area.city.province.name.fa}
+                <Link
+                  to="/city/$name"
+                  params={{ name: cityNameToSlug(accommodation.placeOfResidence.area.city.name.en) }}
+                  className="hover:text-blue-600 transition-colors"
+                >
+                  {accommodation.placeOfResidence.area.city.name.fa}
+                </Link>
+                ،{' '}
+                <Link
+                  to="/province/$name"
+                  params={{ name: cityNameToSlug(accommodation.placeOfResidence.area.city.province.name.en) }}
+                  className="hover:text-blue-600 transition-colors"
+                >
+                  {accommodation.placeOfResidence.area.city.province.name.fa}
+                </Link>
               </span>
             </div>
           </div>

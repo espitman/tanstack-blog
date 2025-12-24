@@ -24,8 +24,8 @@ export default function Header() {
       <header className="sticky top-0 z-40 w-full border-b border-gray-200 bg-white shadow-sm">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 max-w-7xl">
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setIsOpen(true)}
+        <button
+          onClick={() => setIsOpen(true)}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors lg:hidden"
               aria-label="باز کردن منو"
             >
@@ -56,7 +56,7 @@ export default function Header() {
                     <User size={14} className="text-white" />
                   </div>
                   <span className="text-sm font-semibold text-gray-800">{user.mobile}</span>
-                </button>
+        </button>
                 
                 {isUserMenuOpen && (
                   <>
@@ -96,7 +96,7 @@ export default function Header() {
                 <Plus size={18} />
                 پست جدید
               </Button>
-            </Link>
+          </Link>
           </div>
         </div>
       </header>
@@ -139,18 +139,18 @@ export default function Header() {
           )}
 
           <div className="space-y-1">
-            <Link
-              to="/"
-              onClick={() => setIsOpen(false)}
+          <Link
+            to="/"
+            onClick={() => setIsOpen(false)}
               className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 transition-all mb-2 text-gray-700 group"
-              activeProps={{
-                className:
+            activeProps={{
+              className:
                   'flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all mb-2 text-white shadow-md',
-              }}
-            >
+            }}
+          >
               <Home size={20} className="group-[.active]:text-white" />
               <span className="font-medium">خانه</span>
-            </Link>
+          </Link>
 
             <Link
               to="/admin/new"
@@ -185,7 +185,7 @@ export default function Header() {
                 <span className="font-medium">خروج از حساب</span>
               </button>
             )}
-          </div>
+            </div>
         </nav>
       </aside>
     </>
