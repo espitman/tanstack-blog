@@ -108,7 +108,8 @@ export async function getAccommodationReviewSummary(
     )
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch review summary: ${response.statusText}`)
+      console.warn(`Review summary service returned ${response.status}: ${response.statusText}`)
+      return null
     }
 
     const data: ReviewSummary = await response.json()

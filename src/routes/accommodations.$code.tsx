@@ -5,8 +5,18 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { MapPin, Star } from 'lucide-react'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import type { AccommodationDetail, ReviewSummary } from '@/lib/accommodations/accommodation.types'
+import DatePicker, { DateObject } from 'react-multi-date-picker'
+// @ts-ignore
+const DatePickerComponent = DatePicker.default || DatePicker
+import persian from 'react-date-object/calendars/persian'
+// @ts-ignore
+const persianCalendar = persian.default || persian
+import persian_fa from 'react-date-object/locales/persian_fa'
+// @ts-ignore
+const persianLocale = persian_fa.default || persian_fa
+import 'react-multi-date-picker/styles/layouts/mobile.css'
 
 export const Route = createFileRoute('/accommodations/$code')({
   component: AccommodationDetail,
@@ -35,28 +45,37 @@ function AccommodationDetail() {
     review: ReviewSummary | null
   }
   const [guests, setGuests] = useState(accommodation.capacity.guests.base)
-  const [checkInDate, setCheckInDate] = useState('')
-  const [checkOutDate, setCheckOutDate] = useState('')
+  const [checkInDate, setCheckInDate] = useState<DateObject | null>(null)
+  const [checkOutDate, setCheckOutDate] = useState<DateObject | null>(null)
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('fa-IR').format(price)
   }
 
   const nights = useMemo(() => {
-    if (!checkInDate || !checkOutDate) return 1
-    const checkIn = new Date(checkInDate)
-    const checkOut = new Date(checkOutDate)
-    const diffTime = Math.abs(checkOut.getTime() - checkIn.getTime())
+    if (!checkInDate || !checkOutDate) return 0
+    const checkIn = checkInDate.toDate()
+    const checkOut = checkOutDate.toDate()
+    
+    // Reset hours to compare only dates
+    checkIn.setHours(0, 0, 0, 0)
+    checkOut.setHours(0, 0, 0, 0)
+    
+    const diffTime = checkOut.getTime() - checkIn.getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    return diffDays || 1
+    
+    return diffDays > 0 ? diffDays : 0
   }, [checkInDate, checkOutDate])
 
   const totalPrice = useMemo(() => {
-    // برای سادگی، از قیمت پایه استفاده می‌کنیم
-    return accommodation.price.base * nights
+    return accommodation.price.base * (nights || 1)
   }, [accommodation.price.base, nights])
 
-  const today = new Date().toISOString().split('T')[0]
 
   return (
     <div className="min-h-screen bg-white">
@@ -326,30 +345,40 @@ function AccommodationDetail() {
                     </div>
 
                     <div>
-                      <Label htmlFor="checkIn" className="mb-2 block">
-                        تاریخ ورود
-                      </Label>
-                      <Input
-                        id="checkIn"
-                        type="date"
-                        min={today}
-                        value={checkInDate}
-                        onChange={(e) => setCheckInDate(e.target.value)}
-                      />
+                      <Label className="mb-2 block">تاریخ ورود</Label>
+                      {isClient ? (
+                        <DatePickerComponent
+                          value={checkInDate}
+                          onChange={setCheckInDate}
+                          calendar={persianCalendar}
+                          locale={persianLocale}
+                          calendarPosition="bottom-right"
+                          minDate={new Date()}
+                          inputClass="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          containerClassName="w-full"
+                        />
+                      ) : (
+                        <div className="h-10 w-full rounded-md border border-input bg-background animate-pulse" />
+                      )}
                     </div>
 
                     <div>
-                      <Label htmlFor="checkOut" className="mb-2 block">
-                        تاریخ خروج
-                      </Label>
-                      <Input
-                        id="checkOut"
-                        type="date"
-                        min={checkInDate || today}
-                        value={checkOutDate}
-                        onChange={(e) => setCheckOutDate(e.target.value)}
-                        disabled={!checkInDate}
-                      />
+                      <Label className="mb-2 block">تاریخ خروج</Label>
+                      {isClient ? (
+                        <DatePickerComponent
+                          value={checkOutDate}
+                          onChange={setCheckOutDate}
+                          calendar={persianCalendar}
+                          locale={persianLocale}
+                          calendarPosition="bottom-right"
+                          minDate={checkInDate ? new Date(checkInDate.toDate().getTime() + 24 * 60 * 60 * 1000) : new Date()}
+                          disabled={!checkInDate}
+                          inputClass="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          containerClassName="w-full"
+                        />
+                      ) : (
+                        <div className="h-10 w-full rounded-md border border-input bg-background animate-pulse" />
+                      )}
                     </div>
 
                     {checkInDate && checkOutDate && (

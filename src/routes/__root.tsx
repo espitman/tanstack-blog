@@ -1,8 +1,9 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+import { HeadContent, Scripts, createRootRoute, Link } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import Header from '../components/Header'
+import { Button } from '@/components/ui/button'
 
 import appCss from '../styles.css?url'
 
@@ -29,6 +30,21 @@ export const Route = createRootRoute({
   }),
 
   shellComponent: RootDocument,
+  notFoundComponent: () => {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center p-4 text-center">
+        <h2 className="text-4xl font-bold mb-4 text-gray-900">صفحه مورد نظر پیدا نشد</h2>
+        <p className="text-gray-600 mb-8 text-lg">
+          متاسفانه آدرسی که به دنبال آن هستید وجود ندارد یا حذف شده است.
+        </p>
+        <Link to="/">
+          <Button size="lg" className="shadow-lg">
+            بازگشت به صفحه اصلی
+          </Button>
+        </Link>
+      </div>
+    )
+  },
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
