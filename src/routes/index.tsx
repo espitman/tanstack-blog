@@ -5,6 +5,7 @@ import { formatPersianDate } from '@/lib/utils/date'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AccommodationCarousel } from '@/components/AccommodationCarousel'
+import { IranMapSection } from '@/components/IranMapSection'
 import type { Post } from '@/lib/posts/posts.types'
 import type { Accommodation } from '@/lib/accommodations/accommodation.types'
 import { Plus, ArrowLeft } from 'lucide-react'
@@ -42,6 +43,11 @@ function Home() {
           <section className="mb-16">
             <AccommodationCarousel accommodations={accommodations} />
           </section>
+        )}
+
+        {/* Iran Map Section */}
+        {accommodations && accommodations.length > 0 && (
+          <IranMapSection accommodations={accommodations} />
         )}
 
         {/* Blog Posts Section */}
