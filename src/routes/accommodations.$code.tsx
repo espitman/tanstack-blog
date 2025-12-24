@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { MapPin, Star } from 'lucide-react'
+import { MapPin, Star, X, ChevronRight, ChevronLeft } from 'lucide-react'
 import { useState, useMemo, useEffect } from 'react'
 import type { AccommodationDetail, ReviewSummary } from '@/lib/accommodations/accommodation.types'
 import DatePicker, { DateObject } from 'react-multi-date-picker'
@@ -48,10 +48,49 @@ function AccommodationDetail() {
   const [checkInDate, setCheckInDate] = useState<DateObject | null>(null)
   const [checkOutDate, setCheckOutDate] = useState<DateObject | null>(null)
   const [isClient, setIsClient] = useState(false)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxIndex, setLightboxIndex] = useState(0)
 
   useEffect(() => {
     setIsClient(true)
   }, [])
+
+  // Keyboard navigation for lightbox
+  useEffect(() => {
+    if (!lightboxOpen || !accommodation.placeImages) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') {
+        e.preventDefault()
+        setLightboxIndex((prev) => (prev + 1) % accommodation.placeImages.length)
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault()
+        setLightboxIndex((prev) => (prev - 1 + accommodation.placeImages.length) % accommodation.placeImages.length)
+      } else if (e.key === 'Escape') {
+        setLightboxOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [lightboxOpen, accommodation.placeImages])
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index)
+    setLightboxOpen(true)
+  }
+
+  const nextImage = () => {
+    if (accommodation.placeImages) {
+      setLightboxIndex((prev) => (prev + 1) % accommodation.placeImages.length)
+    }
+  }
+
+  const prevImage = () => {
+    if (accommodation.placeImages) {
+      setLightboxIndex((prev) => (prev - 1 + accommodation.placeImages.length) % accommodation.placeImages.length)
+    }
+  }
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('fa-IR').format(price)
@@ -112,7 +151,7 @@ function AccommodationDetail() {
       {accommodation.placeImages && accommodation.placeImages.length > 0 && (
         <div className="container mx-auto h-[400px] md:h-[500px] mb-8 overflow-hidden">
           <div className="flex gap-1 h-full">
-            <div className="w-1/2 h-full">
+            <div className="w-1/2 h-full" onClick={() => openLightbox(0)}>
               <img
                 src={accommodation.placeImages[0]?.url}
                 alt={accommodation.title}
@@ -121,7 +160,7 @@ function AccommodationDetail() {
             </div>
             <div className="w-1/2 h-full grid grid-cols-2 grid-rows-2 gap-1">
               {accommodation.placeImages.slice(1, 5).map((img, idx) => (
-                <div key={idx} className="w-full h-full overflow-hidden">
+                <div key={idx} className="w-full h-full overflow-hidden" onClick={() => openLightbox(idx + 1)}>
                   <img
                     src={img.url}
                     alt={img.caption || accommodation.title}
@@ -130,6 +169,56 @@ function AccommodationDetail() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Lightbox Modal */}
+      {lightboxOpen && accommodation.placeImages && (
+        <div className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center" onClick={() => setLightboxOpen(false)}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              setLightboxOpen(false)
+            }}
+            className="absolute top-4 right-4 text-white hover:bg-white/20 p-2 rounded-full transition-colors z-10"
+            aria-label="بستن"
+          >
+            <X size={24} />
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              prevImage()
+            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 p-3 rounded-full transition-colors z-10"
+            aria-label="عکس قبلی"
+          >
+            <ChevronRight size={32} />
+          </button>
+
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              nextImage()
+            }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 p-3 rounded-full transition-colors z-10"
+            aria-label="عکس بعدی"
+          >
+            <ChevronLeft size={32} />
+          </button>
+
+          <div className="max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={accommodation.placeImages[lightboxIndex]?.url}
+              alt={accommodation.placeImages[lightboxIndex]?.caption || accommodation.title}
+              className="max-w-full max-h-full object-contain"
+            />
+          </div>
+
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white text-sm bg-black/50 px-4 py-2 rounded-full">
+            {lightboxIndex + 1} / {accommodation.placeImages.length}
           </div>
         </div>
       )}
