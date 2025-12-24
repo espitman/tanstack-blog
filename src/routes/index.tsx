@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { getAllPostsFn } from '@/lib/posts/posts.server-functions'
 import { getAllAccommodations } from '@/lib/accommodations/accommodation.server-functions'
+import { formatPersianDate } from '@/lib/utils/date'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AccommodationCarousel } from '@/components/AccommodationCarousel'
-import { formatPersianDate } from '@/lib/utils/date'
 import type { Post } from '@/lib/posts/posts.types'
 import type { Accommodation } from '@/lib/accommodations/accommodation.types'
 import { Plus } from 'lucide-react'
@@ -98,7 +98,7 @@ function Home() {
                     />
                     <div className="flex items-center justify-between pt-4 border-t">
                       <p className="text-xs text-muted-foreground">
-                        {(post as Post & { formattedDate?: string }).formattedDate || formatPersianDate(post.createdAt)}
+                        {(post as Post & { formattedDate?: string }).formattedDate}
                       </p>
                       <span className="text-xs text-blue-600 font-medium group-hover:translate-x-1 inline-block transition-transform">
                         ادامه مطلب ←

@@ -1,6 +1,5 @@
 import { Link } from '@tanstack/react-router'
 import { Card, CardContent } from '@/components/ui/card'
-import { formatPersianDateShort } from '@/lib/utils/date'
 import { ChevronRight, ChevronLeft, Calendar } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import type { Post } from '@/lib/posts/posts.types'
@@ -119,7 +118,7 @@ export function PostsCarousel({ posts }: PostsCarouselProps) {
                 <div className="flex items-center gap-2 text-xs text-muted-foreground pt-3 border-t">
                   <Calendar size={14} />
                   <time>
-                    {(post as Post & { formattedDate?: string }).formattedDate || formatPersianDateShort(post.createdAt)}
+                    {(post as Post & { formattedDate?: string }).formattedDate}
                   </time>
                 </div>
               </CardContent>

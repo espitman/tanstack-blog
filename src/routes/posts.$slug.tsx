@@ -1,9 +1,9 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
 import { getPostBySlugFn, getLatestPostsFn } from '@/lib/posts/posts.server-functions'
+import { formatPersianDate, formatPersianDateShort } from '@/lib/utils/date'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
-import { formatPersianDate, formatPersianDateShort } from '@/lib/utils/date'
 import { Edit2, ArrowLeft, Calendar } from 'lucide-react'
 import type { Post } from '@/lib/posts/posts.types'
 
@@ -77,7 +77,7 @@ function PostDetail() {
                   <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full">
                     <Calendar size={18} className="text-blue-600" />
                 <time className="text-sm font-medium">
-                  {(post as Post & { formattedDate?: string }).formattedDate || formatPersianDate(post.createdAt)}
+                  {(post as Post & { formattedDate?: string }).formattedDate}
                 </time>
                   </div>
                 </div>
