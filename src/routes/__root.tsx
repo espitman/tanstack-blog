@@ -3,6 +3,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import Header from '../components/Header'
+import { Footer } from '../components/Footer'
 import { Button } from '@/components/ui/button'
 
 import appCss from '../styles.css?url'
@@ -58,7 +59,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body style={{ fontFamily: "'Vazirmatn', sans-serif" }}>
         <Header />
-        {children}
+        <main className="min-h-screen">
+          {children}
+        </main>
+        <Footer />
         <TanStackDevtools
           config={{
             position: 'bottom-right',
