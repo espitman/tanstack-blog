@@ -4,6 +4,7 @@ import { getAllAccommodations } from '@/lib/accommodations/accommodation.server-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AccommodationCarousel } from '@/components/AccommodationCarousel'
+import { formatPersianDate } from '@/lib/utils/date'
 import type { Post } from '@/lib/posts/posts.types'
 import type { Accommodation } from '@/lib/accommodations/accommodation.types'
 import { Plus } from 'lucide-react'
@@ -15,7 +16,12 @@ export const Route = createFileRoute('/')({
       getAllPostsFn(),
       getAllAccommodations({ data: { pageSize: 20, pageNumber: 1 } }),
     ])
-    return { posts, accommodations }
+    // Format dates on server to avoid hydration mismatch
+    const postsWithFormattedDates = posts.map((post) => ({
+      ...post,
+      formattedDate: formatPersianDate(post.createdAt),
+    }))
+    return { posts: postsWithFormattedDates, accommodations }
   },
 })
 
@@ -92,11 +98,7 @@ function Home() {
                     />
                     <div className="flex items-center justify-between pt-4 border-t">
                       <p className="text-xs text-muted-foreground">
-                        {new Date(post.createdAt).toLocaleDateString('fa-IR', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
+                        {(post as Post & { formattedDate?: string }).formattedDate || formatPersianDate(post.createdAt)}
                       </p>
                       <span className="text-xs text-blue-600 font-medium group-hover:translate-x-1 inline-block transition-transform">
                         ادامه مطلب ←

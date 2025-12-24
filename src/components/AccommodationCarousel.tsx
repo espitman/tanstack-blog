@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { ChevronRight, ChevronLeft, Star, MapPin, Users } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import type { Accommodation } from '@/lib/accommodations/accommodation.types'
@@ -71,7 +72,14 @@ export function AccommodationCarousel({
   return (
     <div className="relative">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-3xl font-bold text-gray-900">اقامتگاه‌های پیشنهادی</h2>
+        <div className="flex items-center gap-4">
+          <h2 className="text-3xl font-bold text-gray-900">اقامتگاه‌های پیشنهادی</h2>
+          <Link to="/accommodations">
+            <Button variant="outline" size="sm" className="text-sm">
+              مشاهده همه
+            </Button>
+          </Link>
+        </div>
         <div className="flex gap-2">
           <button
             onClick={() => scroll('right')}
@@ -105,7 +113,7 @@ export function AccommodationCarousel({
             key={accommodation.code}
             to="/accommodations/$code"
             params={{ code: accommodation.code.toString() }}
-            className="flex-shrink-0 w-80"
+            className="shrink-0 w-80"
           >
             <Card className="h-full group hover:shadow-2xl transition-all duration-300 cursor-pointer border-0 shadow-md hover:-translate-y-1 overflow-hidden">
               <div className="relative w-full h-56 overflow-hidden">
@@ -178,7 +186,7 @@ export function AccommodationCarousel({
         ))}
       </div>
 
-      <style jsx>{`
+      <style>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
         }

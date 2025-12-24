@@ -3,6 +3,7 @@ import { getPostBySlugFn, getLatestPostsFn } from '@/lib/posts/posts.server-func
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Link } from '@tanstack/react-router'
+import { formatPersianDate, formatPersianDateShort } from '@/lib/utils/date'
 import { Edit2, ArrowLeft, Calendar } from 'lucide-react'
 import type { Post } from '@/lib/posts/posts.types'
 
@@ -16,7 +17,16 @@ export const Route = createFileRoute('/posts/$slug')({
     if (!post) {
       throw notFound()
     }
-    return { post, latestPosts }
+    // Format dates on server to avoid hydration mismatch
+    const postWithFormattedDate = {
+      ...post,
+      formattedDate: formatPersianDate(post.createdAt),
+    }
+    const latestPostsWithFormattedDates = latestPosts.map((p) => ({
+      ...p,
+      formattedDate: formatPersianDateShort(p.createdAt),
+    }))
+    return { post: postWithFormattedDate, latestPosts: latestPostsWithFormattedDates }
   },
 })
 
@@ -66,13 +76,9 @@ function PostDetail() {
                 <div className="flex items-center gap-3 text-gray-600 mb-8 pb-6 border-b border-gray-200">
                   <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full">
                     <Calendar size={18} className="text-blue-600" />
-                    <time className="text-sm font-medium">
-                      {new Date(post.createdAt).toLocaleDateString('fa-IR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
-                    </time>
+                <time className="text-sm font-medium">
+                  {(post as Post & { formattedDate?: string }).formattedDate || formatPersianDate(post.createdAt)}
+                </time>
                   </div>
                 </div>
               </div>
@@ -119,11 +125,7 @@ function PostDetail() {
                               {latestPost.title}
                             </h3>
                             <p className="text-xs text-gray-500">
-                              {new Date(latestPost.createdAt).toLocaleDateString('fa-IR', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                              })}
+                              {(latestPost as Post & { formattedDate?: string }).formattedDate || formatPersianDateShort(latestPost.createdAt)}
                             </p>
                           </div>
                         </div>

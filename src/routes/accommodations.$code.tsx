@@ -1,12 +1,15 @@
 import { createFileRoute, notFound } from '@tanstack/react-router'
 import { getAccommodationByCode, getAccommodationReview } from '@/lib/accommodations/accommodation.server-functions'
+import { getLatestPostsFn } from '@/lib/posts/posts.server-functions'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PostsCarousel } from '@/components/PostsCarousel'
 import { MapPin, Star, X, ChevronRight, ChevronLeft } from 'lucide-react'
 import { useState, useMemo, useEffect } from 'react'
 import type { AccommodationDetail, ReviewSummary } from '@/lib/accommodations/accommodation.types'
+import type { Post } from '@/lib/posts/posts.types'
 import DatePicker, { DateObject } from 'react-multi-date-picker'
 // @ts-ignore
 const DatePickerComponent = DatePicker.default || DatePicker
@@ -26,23 +29,31 @@ export const Route = createFileRoute('/accommodations/$code')({
       throw notFound()
     }
 
-    const [accommodation, review] = await Promise.all([
+    const [accommodation, review, latestPosts] = await Promise.all([
       getAccommodationByCode({ data: code }),
       getAccommodationReview({ data: code }),
+      getLatestPostsFn({ data: { excludeSlug: '', limit: 5 } }),
     ])
 
     if (!accommodation) {
       throw notFound()
     }
 
-    return { accommodation, review }
+    // Format dates on server to avoid hydration mismatch
+    const latestPostsWithFormattedDates = latestPosts.map((p) => ({
+      ...p,
+      formattedDate: formatPersianDateShort(p.createdAt),
+    }))
+
+    return { accommodation, review, latestPosts: latestPostsWithFormattedDates }
   },
 })
 
 function AccommodationDetail() {
-  const { accommodation, review } = Route.useLoaderData() as {
+  const { accommodation, review, latestPosts } = Route.useLoaderData() as {
     accommodation: AccommodationDetail
     review: ReviewSummary | null
+    latestPosts: Post[]
   }
   const [guests, setGuests] = useState(accommodation.capacity.guests.base)
   const [checkInDate, setCheckInDate] = useState<DateObject | null>(null)
@@ -515,6 +526,13 @@ function AccommodationDetail() {
             </div>
           </div>
         </div>
+
+        {/* Posts Carousel Section */}
+        {latestPosts && latestPosts.length > 0 && (
+          <section className="mt-16">
+            <PostsCarousel posts={latestPosts} />
+          </section>
+        )}
       </div>
     </div>
   )
