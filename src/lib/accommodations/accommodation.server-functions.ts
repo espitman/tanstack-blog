@@ -21,7 +21,16 @@ export const getAccommodationByCode = createServerFn({
 })
   .inputValidator((code: number) => code)
   .handler(async ({ data: code }) => {
-    return await getAccommodationDetail(code)
+    const result = await getAccommodationDetail(code)
+    if (!result) return null
+    // Fix badges.data type compatibility
+    return {
+      ...result,
+      badges: {
+        ...result.badges,
+        data: result.badges.data as {}[],
+      },
+    }
   })
 
 // Fetch review summary
