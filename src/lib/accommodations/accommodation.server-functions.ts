@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 import {
   getAccommodations,
+  getAccommodationsByCity,
   getAccommodationDetail,
   getAccommodationReviewSummary,
 } from './accommodation.service'
@@ -31,6 +32,15 @@ export const getAccommodationByCode = createServerFn({
         data: result.badges.data as {}[],
       },
     }
+  })
+
+// Fetch accommodations by city
+export const getAccommodationsByCityFn = createServerFn({
+  method: 'GET',
+})
+  .inputValidator((data: { cityName: string; params?: AccommodationSearchParams }) => data)
+  .handler(async ({ data }) => {
+    return await getAccommodationsByCity(data.cityName, data.params || {})
   })
 
 // Fetch review summary

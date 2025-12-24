@@ -1,15 +1,15 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { getAllAccommodations } from '@/lib/accommodations/accommodation.server-functions'
+import { getAccommodationsByCityFn } from '@/lib/accommodations/accommodation.server-functions'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AccommodationsListSkeleton } from '@/components/AccommodationsListSkeleton'
 import { AccommodationCardSkeleton } from '@/components/AccommodationCardSkeleton'
-import { ChevronRight, ChevronLeft, Star, MapPin, Users } from 'lucide-react'
+import { ChevronRight, ChevronLeft, Star, MapPin, Users, ArrowRight } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import type { Accommodation } from '@/lib/accommodations/accommodation.types'
 
-export const Route = createFileRoute('/accommodations/')({
-  component: AccommodationsList,
+export const Route = createFileRoute('/city/$name')({
+  component: CityAccommodations,
   pendingComponent: AccommodationsListSkeleton,
   pendingMs: 0,
   validateSearch: (search: Record<string, unknown>) => {
@@ -17,56 +17,46 @@ export const Route = createFileRoute('/accommodations/')({
       page: Number(search.page) || 1,
     }
   },
-  loader: async () => {
-    // Load initial data - page will be handled in component
+  loader: async ({ params }) => {
+    const cityName = params.name
     const pageSize = 15
-    const accommodations = await getAllAccommodations({
-      data: { pageSize, pageNumber: 1 },
+    
+    const accommodations = await getAccommodationsByCityFn({
+      data: { cityName, params: { pageSize, pageNumber: 1 } },
     })
+    
     const hasMore = accommodations.length === pageSize
-    return { accommodations, pageSize, hasMore }
+    return { accommodations, pageSize, hasMore, cityName }
   },
 })
 
-function AccommodationsList() {
+function CityAccommodations() {
+  const { accommodations: initialAccommodations, pageSize, hasMore: initialHasMore, cityName } = Route.useLoaderData()
   const search = Route.useSearch()
   const navigate = Route.useNavigate()
-  const initialData = Route.useLoaderData()
   const currentPage = search.page || 1
-  const pageSize = 15
 
-  // Use loader data for page 1, fetch for other pages
-  const [accommodations, setAccommodations] = useState<Accommodation[]>(
-    currentPage === 1 ? initialData.accommodations : []
-  )
-  const [hasMore, setHasMore] = useState(
-    currentPage === 1 ? initialData.hasMore : true
-  )
+  const [accommodations, setAccommodations] = useState<Accommodation[]>(initialAccommodations)
+  const [hasMore, setHasMore] = useState(initialHasMore)
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    if (currentPage === 1) {
-      setAccommodations(initialData.accommodations)
-      setHasMore(initialData.hasMore)
-      setIsLoading(false)
-      return
-    }
+    if (currentPage === 1 && accommodations === initialAccommodations) return
 
     setIsLoading(true)
-    getAllAccommodations({
-      data: { pageSize, pageNumber: currentPage },
+    getAccommodationsByCityFn({
+      data: { cityName, params: { pageSize, pageNumber: currentPage } },
     }).then((data) => {
       setAccommodations(data)
       setHasMore(data.length === pageSize)
       setIsLoading(false)
     })
-  }, [currentPage, pageSize, initialData])
-
-  const showPagination = currentPage > 1 || hasMore
+  }, [currentPage, pageSize, cityName, initialAccommodations])
 
   const handlePageChange = (newPage: number) => {
     navigate({
-      to: '/accommodations',
+      to: '/city/$name',
+      params: { name: cityName },
       search: { page: newPage },
     })
   }
@@ -75,17 +65,31 @@ function AccommodationsList() {
     return new Intl.NumberFormat('fa-IR').format(price)
   }
 
+  // Convert city name from URL format to display format
+  const displayCityName = cityName
+    .split('_')
+    .map((word: string) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ')
+
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50">
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-0">همه اقامتگاه‌ها</h1>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">اقامتگاه‌های {displayCityName}</h1>
             <p className="text-gray-600">انتخاب از بین {accommodations.length} اقامتگاه</p>
           </div>
-          <Link to="/">
-            <Button variant="outline">بازگشت به صفحه اصلی</Button>
-          </Link>
+          <div className="flex gap-3">
+            <Link to="/accommodations">
+              <Button variant="outline">همه اقامتگاه‌ها</Button>
+            </Link>
+            <Link to="/">
+              <Button variant="outline">
+                <ArrowRight size={16} className="ml-2" />
+                صفحه اصلی
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {isLoading ? (
@@ -96,7 +100,10 @@ function AccommodationsList() {
           </div>
         ) : accommodations.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-gray-600">هیچ اقامتگاهی یافت نشد</p>
+            <p className="text-gray-600 mb-4">هیچ اقامتگاهی در {displayCityName} یافت نشد</p>
+            <Link to="/accommodations">
+              <Button>مشاهده همه اقامتگاه‌ها</Button>
+            </Link>
           </div>
         ) : (
           <>
@@ -107,7 +114,7 @@ function AccommodationsList() {
                   to="/accommodations/$code"
                   params={{ code: accommodation.code.toString() }}
                 >
-                  <Card className="h-full group hover:shadow-2xl transition-all duration-300 cursor-pointer border-0 shadow-md hover:-translate-y-1 overflow-hidden pt-0">
+                  <Card className="h-full group hover:shadow-2xl transition-all duration-300 cursor-pointer border-0 shadow-md hover:-translate-y-1 overflow-hidden">
                     <div className="relative w-full h-56 overflow-hidden">
                       <img
                         src={accommodation.image}
@@ -175,7 +182,7 @@ function AccommodationsList() {
             </div>
 
             {/* Pagination */}
-            {showPagination && (
+            {(currentPage > 1 || hasMore) && (
               <div className="flex items-center justify-center gap-2">
                 <Button
                   variant="outline"
