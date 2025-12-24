@@ -1,14 +1,12 @@
-import { createFileRoute, notFound, Link } from '@tanstack/react-router'
+import { createFileRoute, notFound } from '@tanstack/react-router'
 import { getAccommodationByCode, getAccommodationReview } from '@/lib/accommodations/accommodation.server-functions'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  MapPin,
-  Star,
-} from 'lucide-react'
+import { MapPin, Star } from 'lucide-react'
 import { useState, useMemo } from 'react'
+import type { AccommodationDetail, ReviewSummary } from '@/lib/accommodations/accommodation.types'
 
 export const Route = createFileRoute('/accommodations/$code')({
   component: AccommodationDetail,
@@ -32,7 +30,10 @@ export const Route = createFileRoute('/accommodations/$code')({
 })
 
 function AccommodationDetail() {
-  const { accommodation, review } = Route.useLoaderData()
+  const { accommodation, review } = Route.useLoaderData() as {
+    accommodation: AccommodationDetail
+    review: ReviewSummary | null
+  }
   const [guests, setGuests] = useState(accommodation.capacity.guests.base)
   const [checkInDate, setCheckInDate] = useState('')
   const [checkOutDate, setCheckOutDate] = useState('')
@@ -191,7 +192,7 @@ function AccommodationDetail() {
                         <img
                           src={amenity.icon.url}
                           alt={amenity.title.fa}
-                          className="w-6 h-6 flex-shrink-0"
+                          className="w-6 h-6 shrink-0"
                         />
                       )}
                       <span className="text-sm text-gray-700">{amenity.title.fa}</span>

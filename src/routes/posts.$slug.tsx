@@ -20,7 +20,7 @@ function PostDetail() {
   const post = Route.useLoaderData()
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50">
       <article className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="flex flex-wrap gap-3 mb-8">
           <Link to="/">

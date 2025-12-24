@@ -41,7 +41,7 @@ function NewPost() {
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 via-white to-gray-50">
       <div className="container mx-auto px-4 py-12 max-w-3xl">
         <Link to="/">
           <Button variant="outline" className="mb-8">
