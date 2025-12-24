@@ -16,8 +16,10 @@ const JABAMA_API_URL =
 export async function getAccommodations(
   params: AccommodationSearchParams = {},
 ): Promise<Accommodation[]> {
+  console.log('params', params)
   const { pageSize = 32, pageNumber = 1 } = params
   try {
+    console.log({pageSize, pageNumber})
     const response = await fetch(JABAMA_API_URL, {
       method: 'POST',
       headers: {

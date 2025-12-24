@@ -19,7 +19,7 @@ export const Route = createFileRoute('/accommodations/')({
   },
   loader: async () => {
     // Load initial data - page will be handled in component
-    const pageSize = 20
+    const pageSize = 15
     const accommodations = await getAllAccommodations({
       data: { pageSize, pageNumber: 1 },
     })
@@ -33,7 +33,7 @@ function AccommodationsList() {
   const navigate = Route.useNavigate()
   const initialData = Route.useLoaderData()
   const currentPage = search.page || 1
-  const pageSize = 20
+  const pageSize = 15
 
   // Use loader data for page 1, fetch for other pages
   const [accommodations, setAccommodations] = useState<Accommodation[]>(
@@ -100,7 +100,7 @@ function AccommodationsList() {
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
               {accommodations.map((accommodation: Accommodation) => (
                 <Link
                   key={accommodation.code}
