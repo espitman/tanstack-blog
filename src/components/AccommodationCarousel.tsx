@@ -1,10 +1,11 @@
 import { Link } from '@tanstack/react-router'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ChevronRight, ChevronLeft, Star, MapPin, Users } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Star, MapPin, Users } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import type { Accommodation } from '@/lib/accommodations/accommodation.types'
 import { cityNameToSlug } from '@/lib/utils/city'
+import { formatPrice } from '@/lib/utils/price'
 
 interface AccommodationCarouselProps {
   accommodations: Accommodation[]
@@ -65,10 +66,6 @@ export function AccommodationCarousel({
       }
     }
   }, [accommodations.length])
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('fa-IR').format(price)
-  }
 
   return (
     <div className="relative">
@@ -183,7 +180,7 @@ export function AccommodationCarousel({
                     {accommodation.price.discountedPrice ? (
                       <div>
                         <span className="text-lg font-bold text-gray-900">
-                          {formatPrice(accommodation.price.discountedPrice)} تومان
+                          {formatPrice(accommodation.price.discountedPrice)}
                         </span>
                         <span className="text-sm text-muted-foreground line-through mr-2">
                           {formatPrice(accommodation.price.mainPrice)}
@@ -191,7 +188,7 @@ export function AccommodationCarousel({
                       </div>
                     ) : (
                       <span className="text-lg font-bold text-gray-900">
-                        {formatPrice(accommodation.price.mainPrice)} تومان
+                        {formatPrice(accommodation.price.mainPrice)}
                       </span>
                     )}
                     <p className="text-xs text-muted-foreground mt-1">برای هر شب</p>

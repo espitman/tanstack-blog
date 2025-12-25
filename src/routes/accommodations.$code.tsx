@@ -11,6 +11,7 @@ import { AccommodationDetailSkeleton } from '@/components/AccommodationDetailSke
 import { MapPin, Star, X, ChevronRight, ChevronLeft } from 'lucide-react'
 import { useState, useMemo, useEffect } from 'react'
 import { cityNameToSlug } from '@/lib/utils/city'
+import { formatPrice, formatPriceNumber, rialToToman } from '@/lib/utils/price'
 import type { AccommodationDetail, ReviewSummary } from '@/lib/accommodations/accommodation.types'
 import type { Post } from '@/lib/posts/posts.types'
 import DatePicker, { DateObject } from 'react-multi-date-picker'
@@ -107,10 +108,6 @@ function AccommodationDetail() {
     if (accommodation.placeImages) {
       setLightboxIndex((prev) => (prev - 1 + accommodation.placeImages.length) % accommodation.placeImages.length)
     }
-  }
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('fa-IR').format(price)
   }
 
   const nights = useMemo(() => {
@@ -426,11 +423,11 @@ function AccommodationDetail() {
                       <span className="text-3xl font-bold text-gray-900">
                         {formatPrice(accommodation.price.base)}
                       </span>
-                      <span className="text-gray-600">تومان / شب</span>
+                      <span className="text-gray-600">/ شب</span>
                     </div>
                     {accommodation.price.holiday !== accommodation.price.base && (
                       <div className="text-sm text-gray-600">
-                        تعطیلات: {formatPrice(accommodation.price.holiday)} تومان
+                        تعطیلات: {formatPrice(accommodation.price.holiday)}
                       </div>
                     )}
                   </div>
@@ -513,7 +510,7 @@ function AccommodationDetail() {
                     <div className="flex items-center justify-between">
                       <span className="text-gray-600">مبلغ کل</span>
                       <span className="text-2xl font-bold text-gray-900">
-                        {formatPrice(totalPrice)} تومان
+                        {formatPrice(totalPrice)}
                       </span>
                     </div>
                   </div>

@@ -8,6 +8,7 @@ import { ChevronRight, ChevronLeft, Star, MapPin, Users, ArrowRight } from 'luci
 import { useState, useEffect } from 'react'
 import type { Accommodation } from '@/lib/accommodations/accommodation.types'
 import { cityNameToSlug } from '@/lib/utils/city'
+import { formatPrice } from '@/lib/utils/price'
 
 export const Route = createFileRoute('/province/$name')({
   component: ProvinceAccommodations,
@@ -60,10 +61,6 @@ function ProvinceAccommodations() {
       params: { name: provinceName },
       search: { page: newPage },
     })
-  }
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('fa-IR').format(price)
   }
 
   // Get Persian province name from first accommodation or use slug conversion as fallback
@@ -180,7 +177,7 @@ function ProvinceAccommodations() {
                           {accommodation.price.discountedPrice ? (
                             <div>
                               <span className="text-lg font-bold text-gray-900">
-                                {formatPrice(accommodation.price.discountedPrice)} تومان
+                                {formatPrice(accommodation.price.discountedPrice)}
                               </span>
                               <span className="text-sm text-muted-foreground line-through mr-2">
                                 {formatPrice(accommodation.price.mainPrice)}
@@ -188,7 +185,7 @@ function ProvinceAccommodations() {
                             </div>
                           ) : (
                             <span className="text-lg font-bold text-gray-900">
-                              {formatPrice(accommodation.price.mainPrice)} تومان
+                              {formatPrice(accommodation.price.mainPrice)}
                             </span>
                           )}
                           <p className="text-xs text-muted-foreground mt-1">برای هر شب</p>
